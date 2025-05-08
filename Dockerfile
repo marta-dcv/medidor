@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=build /app/target/tu-aplicacion.jar /app/tu-aplicacion.jar
 
 # Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "/app/tu-aplicacion.jar"]
+ENTRYPOINT ["java", "-jar", "/app/medidor.jar"]
 
 # Exponer el puerto en el que Spring Boot estará escuchando
 EXPOSE 8080
