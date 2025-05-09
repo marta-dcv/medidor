@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Superhero Battle</title>
     <style>
-        
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -40,6 +39,7 @@
             height: 150px;
             border-radius: 50%;
             margin-bottom: 15px;
+            object-fit: cover;
         }
         .hero-name {
             font-size: 24px;
@@ -56,14 +56,15 @@
             margin-top: 40px;
             text-align: center;
         }
-        .result-win {
-            color: green;
-        }
-        .result-lose {
+        .result-win { color: green; }
+        .result-lose { color: red; }
+        .result-draw { color: gray; }
+
+        .error-message {
             color: red;
-        }
-        .result-draw {
-            color: gray;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -71,8 +72,13 @@
 
 <h1>Superhero Battle</h1>
 
+<!-- Mostrar error si lo hay -->
+<div th:if="${error}" class="error-message">
+    <p th:text="${error}"></p>
+</div>
+
 <!-- Mostrar batalla entre dos héroes -->
-<div class="battle-container">
+<div class="battle-container" th:if="${battleResult != null}">
     <div class="hero-card">
         <img th:src="${battleResult.hero1.image.url}" alt="Hero 1"/>
         <div class="hero-name" th:text="${battleResult.hero1.name}">Hero 1 Name</div>
@@ -87,24 +93,23 @@
 </div>
 
 <!-- Mostrar el ganador -->
-<div class="battle-result" th:if="${battleResult.winner != null}">
+<div class="battle-result" th:if="${battleResult != null and battleResult.winner != null}">
     <span th:class="${battleResult.winner == 'Draw' ? 'result-draw' : (battleResult.winner == battleResult.hero1.name ? 'result-win' : 'result-lose')}">
         <span th:text="'Winner: ' + ${battleResult.winner}"></span>
     </span>
 </div>
 
-
+<!-- Confetti solo si hay un ganador -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script th:if="${battleResult.winner != null and battleResult.winner != 'Draw'}">
+<script th:if="${battleResult != null and battleResult.winner != null and battleResult.winner != 'Draw'}">
     window.onload = function () {
         confetti({
-            particleCount: 200,
-            spread: 70,
+            particleCount: 250,
+            spread: 90,
             origin: { y: 0.6 }
         });
     };
 </script>
-
 
 </body>
 </html>

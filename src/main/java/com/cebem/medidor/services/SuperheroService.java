@@ -11,10 +11,8 @@ public class SuperheroService {
 
     private static final String TOKEN = "REMOVED_TOKEN";
     private static final String BASE_URL = "https://superheroapi.com/api/" + TOKEN + "/";
-
     private final RestTemplate restTemplate = new RestTemplate();
 
-    // Método para obtener todos los superhéroes
     public Map<String, List<Superhero>> getSuperheroesGroupedByAffiliation() {
         Map<String, List<Superhero>> groupedByAffiliation = new HashMap<>();
 
@@ -36,7 +34,6 @@ public class SuperheroService {
                         }
                     }
                 }
-
             } catch (Exception e) {
                 System.err.println("Error al obtener héroe ID " + i + ": " + e.getMessage());
             }
@@ -45,23 +42,22 @@ public class SuperheroService {
         return groupedByAffiliation;
     }
 
-    // Método para obtener una batalla aleatoria entre dos héroes
     public Map<String, Object> getRandomHeroBattle() {
-        // Obtener todos los héroes
         List<Superhero> allHeroes = new ArrayList<>();
         for (List<Superhero> heroes : getSuperheroesGroupedByAffiliation().values()) {
             allHeroes.addAll(heroes);
         }
 
-        // Seleccionar dos héroes aleatorios
+        if (allHeroes.size() < 2) {
+            throw new IllegalStateException("No hay suficientes superhéroes para una batalla.");
+        }
+
         Collections.shuffle(allHeroes);
         Superhero hero1 = allHeroes.get(0);
         Superhero hero2 = allHeroes.get(1);
 
-        // Determinar el ganador
         String winner = compareHeroes(hero1, hero2);
 
-        // Crear la estructura para la batalla
         Map<String, Object> battleResult = new HashMap<>();
         battleResult.put("hero1", hero1);
         battleResult.put("hero2", hero2);
@@ -70,17 +66,24 @@ public class SuperheroService {
         return battleResult;
     }
 
-    // Método para comparar los poderes de dos héroes y determinar un ganador
     private String compareHeroes(Superhero hero1, Superhero hero2) {
-        int power1 = hero1.getPowerstats() != null ? Integer.parseInt(hero1.getPowerstats().getPower()) : 0;
-        int power2 = hero2.getPowerstats() != null ? Integer.parseInt(hero2.getPowerstats().getPower()) : 0;
+        int power1 = extractPower(hero1);
+        int power2 = extractPower(hero2);
 
-        if (power1 > power2) {
-            return hero1.getName();
-        } else if (power2 > power1) {
-            return hero2.getName();
-        } else {
-            return "Draw";  // En caso de empate
+        if (power1 > power2) return hero1.getName();
+        if (power2 > power1) return hero2.getName();
+        return "Draw";
+    }
+
+    private int extractPower(Superhero hero) {
+        try {
+            if (hero != null && hero.getPowerstats() != null) {
+                String power = hero.getPowerstats().getPower();
+                return power != null ? Integer.parseInt(power) : 0;
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Valor de 'power' no numérico para " + hero.getName());
         }
+        return 0;
     }
 }

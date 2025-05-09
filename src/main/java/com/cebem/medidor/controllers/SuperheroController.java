@@ -12,14 +12,14 @@ public class SuperheroController {
     @Autowired
     private SuperheroService superheroService;
 
-@GetMapping("/superheroes")
-public String showSuperheroes(Model model) {
-    try {
-        model.addAttribute("battleResult", superheroService.getRandomHeroBattle());
-    } catch (Exception e) {
-        e.printStackTrace(); // Esto mostrará el error en la consola si algo va mal
-        model.addAttribute("error", "There was an error fetching the battle.");
+    @GetMapping("/superheroes")
+    public String showSuperheroes(Model model) {
+        try {
+            model.addAttribute("battleResult", superheroService.getRandomHeroBattle());
+        } catch (Exception e) {
+            e.printStackTrace(); // para logs
+            model.addAttribute("error", "Error al cargar la batalla de superhéroes.");
+        }
+        return "SuperheroCard";
     }
-    return "SuperheroCard";
-}
 }
