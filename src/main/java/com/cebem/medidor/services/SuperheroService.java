@@ -21,6 +21,7 @@ public class SuperheroService {
             try {
                 Superhero hero = restTemplate.getForObject(BASE_URL + i, Superhero.class);
 
+                // Asegurarse de que el héroe y su afiliación no sean nulos
                 if (hero != null && hero.getConnections() != null) {
                     String affiliations = hero.getConnections().getGroupAffiliation();
                     if (affiliations != null && !affiliations.trim().isEmpty()) {
@@ -28,6 +29,7 @@ public class SuperheroService {
                         for (String group : groups) {
                             String trimmedGroup = group.trim();
                             if (!trimmedGroup.isEmpty()) {
+                                // Añadir al mapa de afiliaciones
                                 groupedByAffiliation
                                     .computeIfAbsent(trimmedGroup, k -> new ArrayList<>())
                                     .add(hero);
@@ -37,6 +39,7 @@ public class SuperheroService {
                 }
 
             } catch (Exception e) {
+                // Imprimir el error para depurar
                 System.err.println("Error al obtener héroe ID " + i + ": " + e.getMessage());
             }
         }
@@ -54,10 +57,12 @@ public class SuperheroService {
         int selected = 0;
         Set<String> used = new HashSet<>();
 
+        // Se seleccionan 2 grupos para enfrentarse
         while (selected < count * 2 && groupNames.size() >= 2) {
             String group1 = groupNames.remove(0);
             String group2 = groupNames.remove(0);
 
+            // Verificar si alguno de los grupos está vacío
             if (allGroups.get(group1).isEmpty() || allGroups.get(group2).isEmpty()) continue;
 
             battles.put(group1, Map.of(
