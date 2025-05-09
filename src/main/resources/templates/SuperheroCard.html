@@ -14,12 +14,13 @@
         }
         .battle-container {
             display: flex;
-            flex-direction: column;
-            gap: 50px;
+            justify-content: center;
+            margin-top: 20px;
         }
         .battle-row {
             display: flex;
             justify-content: space-between;
+            width: 80%;
         }
         .group {
             width: 48%;
@@ -57,7 +58,7 @@
 </head>
 <body>
 
-<h1>Superhero Group Battles</h1>
+<h1>Superhero Group Battle</h1>
 
 <div class="battle-container">
     <div th:each="entry : ${groupBattles}">

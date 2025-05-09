@@ -14,7 +14,8 @@ public class SuperheroController {
 
     @GetMapping("/superheroes")
     public String showSuperheroes(Model model) {
-        model.addAttribute("groupBattles", superheroService.getRandomGroupBattles(3));
+        // Recuperamos solo una batalla aleatoria entre dos grupos
+        model.addAttribute("groupBattles", superheroService.getRandomGroupBattle());
         return "SuperheroCard";
     }
 }

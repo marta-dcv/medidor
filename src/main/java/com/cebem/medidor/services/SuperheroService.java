@@ -21,7 +21,6 @@ public class SuperheroService {
             try {
                 Superhero hero = restTemplate.getForObject(BASE_URL + i, Superhero.class);
 
-                // Asegurarse de que el héroe y su afiliación no sean nulos
                 if (hero != null && hero.getConnections() != null) {
                     String affiliations = hero.getConnections().getGroupAffiliation();
                     if (affiliations != null && !affiliations.trim().isEmpty()) {
@@ -29,7 +28,6 @@ public class SuperheroService {
                         for (String group : groups) {
                             String trimmedGroup = group.trim();
                             if (!trimmedGroup.isEmpty()) {
-                                // Añadir al mapa de afiliaciones
                                 groupedByAffiliation
                                     .computeIfAbsent(trimmedGroup, k -> new ArrayList<>())
                                     .add(hero);
@@ -39,7 +37,6 @@ public class SuperheroService {
                 }
 
             } catch (Exception e) {
-                // Imprimir el error para depurar
                 System.err.println("Error al obtener héroe ID " + i + ": " + e.getMessage());
             }
         }
@@ -47,34 +44,23 @@ public class SuperheroService {
         return groupedByAffiliation;
     }
 
-    public Map<String, Map<String, List<Superhero>>> getRandomGroupBattles(int count) {
+    // Método para obtener una batalla aleatoria entre dos grupos
+    public Map<String, Map<String, List<Superhero>>> getRandomGroupBattle() {
         Map<String, List<Superhero>> allGroups = getSuperheroesGroupedByAffiliation();
         List<String> groupNames = new ArrayList<>(allGroups.keySet());
-        Collections.shuffle(groupNames);
+        Collections.shuffle(groupNames);  // Mezclamos los grupos
 
-        Map<String, Map<String, List<Superhero>>> battles = new LinkedHashMap<>();
+        // Seleccionamos solo dos grupos para la batalla
+        String group1 = groupNames.get(0);
+        String group2 = groupNames.get(1);
 
-        int selected = 0;
-        Set<String> used = new HashSet<>();
+        // Creamos la estructura para la batalla entre los dos grupos
+        Map<String, Map<String, List<Superhero>>> battle = new LinkedHashMap<>();
+        battle.put(group1, Map.of(
+            "enemies", allGroups.get(group2),
+            "allies", allGroups.get(group1)
+        ));
 
-        // Se seleccionan 2 grupos para enfrentarse
-        while (selected < count * 2 && groupNames.size() >= 2) {
-            String group1 = groupNames.remove(0);
-            String group2 = groupNames.remove(0);
-
-            // Verificar si alguno de los grupos está vacío
-            if (allGroups.get(group1).isEmpty() || allGroups.get(group2).isEmpty()) continue;
-
-            battles.put(group1, Map.of(
-                "enemies", allGroups.get(group2),
-                "allies", allGroups.get(group1)
-            ));
-
-            used.add(group1);
-            used.add(group2);
-            selected += 2;
-        }
-
-        return battles;
+        return battle;
     }
 }
