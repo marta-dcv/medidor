@@ -43,4 +43,33 @@ public class SuperheroService {
 
         return groupedByAffiliation;
     }
+
+    public Map<String, Map<String, List<Superhero>>> getRandomGroupBattles(int count) {
+        Map<String, List<Superhero>> allGroups = getSuperheroesGroupedByAffiliation();
+        List<String> groupNames = new ArrayList<>(allGroups.keySet());
+        Collections.shuffle(groupNames);
+
+        Map<String, Map<String, List<Superhero>>> battles = new LinkedHashMap<>();
+
+        int selected = 0;
+        Set<String> used = new HashSet<>();
+
+        while (selected < count * 2 && groupNames.size() >= 2) {
+            String group1 = groupNames.remove(0);
+            String group2 = groupNames.remove(0);
+
+            if (allGroups.get(group1).isEmpty() || allGroups.get(group2).isEmpty()) continue;
+
+            battles.put(group1, Map.of(
+                "enemies", allGroups.get(group2),
+                "allies", allGroups.get(group1)
+            ));
+
+            used.add(group1);
+            used.add(group2);
+            selected += 2;
+        }
+
+        return battles;
+    }
 }

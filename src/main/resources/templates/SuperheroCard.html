@@ -1,26 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Superhéroes por Grupo</title>
+    <meta charset="UTF-8">
+    <title>Superhero Battle</title>
     <style>
-        body { font-family: Arial; background: #f2f2f2; }
-        .group { margin: 20px; padding: 20px; background: #fff; border-radius: 10px; }
-        .hero-card { display: inline-block; width: 200px; margin: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; }
-        .hero-card img { width: 100%; height: auto; }
-        .hero-name { font-weight: bold; text-align: center; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .battle-container {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+        .battle-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        .group {
+            width: 48%;
+        }
+        .group h2 {
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .hero-card {
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 10px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+        .hero-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .hero-info span {
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
-    <h1>Superhéroes agrupados por afiliación</h1>
-    <div th:each="entry : ${groupedHeroes}">
-        <div class="group">
-            <h2 th:text="${entry.key}">Nombre del Grupo</h2>
-            <div th:each="hero : ${entry.value}" class="hero-card">
-                <img th:src="${hero.image.url}" alt="Imagen">
-                <div class="hero-name" th:text="${hero.name}">Nombre</div>
-                <p th:text="'Poder: ' + ${hero.powerstats.power}">Poder</p>
+
+<h1>Superhero Group Battles</h1>
+
+<div class="battle-container">
+    <div th:each="entry : ${groupBattles}">
+        <div class="battle-row">
+            <!-- Grupo -->
+            <div class="group">
+                <h2 th:text="${entry.key}">Group Name</h2>
+                <div th:each="hero : ${entry.value.allies}">
+                    <div class="hero-card">
+                        <img th:src="${hero.image.url}" alt="Hero Image"/>
+                        <div class="hero-info">
+                            <strong th:text="${hero.name}">Hero Name</strong>
+                            <span th:text="'Power: ' + ${#numbers.parseInt(hero.powerstats.power != null ? hero.powerstats.power : '0')}">Power</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enemigo -->
+            <div class="group">
+                <h2 th:text="'VS ' + ${#lists.contains(groupBattles.keySet(), entry.key) ? '' : 'Enemy'}">Enemy Group</h2>
+                <div th:each="enemy : ${entry.value.enemies}">
+                    <div class="hero-card">
+                        <img th:src="${enemy.image.url}" alt="Hero Image"/>
+                        <div class="hero-info">
+                            <strong th:text="${enemy.name}">Enemy Name</strong>
+                            <span th:text="'Power: ' + ${#numbers.parseInt(enemy.powerstats.power != null ? enemy.powerstats.power : '0')}">Power</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
 </body>
 </html>
