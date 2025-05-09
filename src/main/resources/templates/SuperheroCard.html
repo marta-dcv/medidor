@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Superhéroes por Grupo</title>
+    <style>
+        body { font-family: Arial; background: #f2f2f2; }
+        .group { margin: 20px; padding: 20px; background: #fff; border-radius: 10px; }
+        .hero-card { display: inline-block; width: 200px; margin: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; }
+        .hero-card img { width: 100%; height: auto; }
+        .hero-name { font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Superhéroes agrupados por afiliación</h1>
+    <div th:each="entry : ${groupedHeroes}">
+        <div class="group">
+            <h2 th:text="${entry.key}">Nombre del Grupo</h2>
+            <div th:each="hero : ${entry.value}" class="hero-card">
+                <img th:src="${hero.image.url}" alt="Imagen">
+                <div class="hero-name" th:text="${hero.name}">Nombre</div>
+                <p th:text="'Poder: ' + ${hero.powerstats.power}">Poder</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
