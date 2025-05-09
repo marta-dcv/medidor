@@ -28,7 +28,7 @@ public class Superhero {
         private String speed;
         private String durability;
         private String power;
-        private String combat;
+        private String combat; 
     }
 
     @Data
