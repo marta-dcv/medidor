@@ -20,6 +20,6 @@ public class SuperheroController {
             e.printStackTrace(); // para logs
             model.addAttribute("error", "Error al cargar la batalla de superhéroes.");
         }
-        return "SuperheroCard";
+        return "SuperheroCard"; 
     }
 }
