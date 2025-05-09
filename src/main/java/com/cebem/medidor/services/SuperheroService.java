@@ -1,6 +1,7 @@
 package com.cebem.medidor.services;
 
 import com.cebem.medidor.models.Superhero;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -9,8 +10,11 @@ import java.util.*;
 @Service
 public class SuperheroService {
 
-    private static final String TOKEN = "REMOVED_TOKEN";
-    private static final String BASE_URL = "https://superheroapi.com/api/" + TOKEN + "/";
+    @Value("${superhero.api.token}")
+    private String apiToken;
+
+    private final String baseUrl = "https://superheroapi.com/api/";
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     public Map<String, List<Superhero>> getSuperheroesGroupedByAffiliation() {
@@ -18,7 +22,7 @@ public class SuperheroService {
 
         for (int i = 1; i <= 100; i++) {
             try {
-                Superhero hero = restTemplate.getForObject(BASE_URL + i, Superhero.class);
+                Superhero hero = restTemplate.getForObject(baseUrl + apiToken + "/" + i, Superhero.class);
 
                 if (hero != null && hero.getConnections() != null) {
                     String affiliations = hero.getConnections().getGroupAffiliation();
