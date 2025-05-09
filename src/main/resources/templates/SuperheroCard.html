@@ -4,95 +4,107 @@
     <meta charset="UTF-8">
     <title>Superhero Battle</title>
     <style>
+        
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            padding: 20px;
+            padding: 30px;
+            margin: 0;
         }
         h1 {
             text-align: center;
+            font-size: 36px;
+            margin-bottom: 20px;
         }
         .battle-container {
             display: flex;
             justify-content: center;
-            margin-top: 20px;
-        }
-        .battle-row {
-            display: flex;
-            justify-content: space-between;
-            width: 80%;
-        }
-        .group {
-            width: 48%;
-        }
-        .group h2 {
-            text-align: center;
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            border-radius: 6px;
+            align-items: center;
+            gap: 50px;
+            margin-top: 40px;
         }
         .hero-card {
             background-color: white;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 10px;
-            margin: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+            width: 250px;
+            transition: transform 0.2s ease;
+        }
+        .hero-card:hover {
+            transform: scale(1.05);
         }
         .hero-card img {
-            width: 60px;
-            height: 60px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
+            margin-bottom: 15px;
         }
-        .hero-info {
-            display: flex;
-            flex-direction: column;
+        .hero-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
         }
-        .hero-info span {
-            font-size: 14px;
+        .hero-power {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .battle-result {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 40px;
+            text-align: center;
+        }
+        .result-win {
+            color: green;
+        }
+        .result-lose {
+            color: red;
+        }
+        .result-draw {
+            color: gray;
         }
     </style>
 </head>
 <body>
 
-<h1>Superhero Group Battle</h1>
+<h1>Superhero Battle</h1>
 
+<!-- Mostrar batalla entre dos héroes -->
 <div class="battle-container">
-    <div th:each="entry : ${groupBattles}">
-        <div class="battle-row">
-            <!-- Grupo -->
-            <div class="group">
-                <h2 th:text="${entry.key}">Group Name</h2>
-                <div th:each="hero : ${entry.value.allies}">
-                    <div class="hero-card">
-                        <img th:src="${hero.image.url}" alt="Hero Image"/>
-                        <div class="hero-info">
-                            <strong th:text="${hero.name}">Hero Name</strong>
-                            <span th:text="'Power: ' + ${hero.powerstats != null && hero.powerstats.power != null ? hero.powerstats.power : '0'}">Power</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="hero-card">
+        <img th:src="${battleResult.hero1.image.url}" alt="Hero 1"/>
+        <div class="hero-name" th:text="${battleResult.hero1.name}">Hero 1 Name</div>
+        <div class="hero-power" th:text="'Power: ' + ${battleResult.hero1.powerstats.power}">Power</div>
+    </div>
 
-            <!-- Enemigo -->
-            <div class="group">
-                <h2 th:text="'VS ' + ${entry.key}">Enemy Group</h2>
-                <div th:each="enemy : ${entry.value.enemies}">
-                    <div class="hero-card">
-                        <img th:src="${enemy.image.url}" alt="Hero Image"/>
-                        <div class="hero-info">
-                            <strong th:text="${enemy.name}">Enemy Name</strong>
-                            <span th:text="'Power: ' + ${enemy.powerstats != null && enemy.powerstats.power != null ? enemy.powerstats.power : '0'}">Power</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="hero-card">
+        <img th:src="${battleResult.hero2.image.url}" alt="Hero 2"/>
+        <div class="hero-name" th:text="${battleResult.hero2.name}">Hero 2 Name</div>
+        <div class="hero-power" th:text="'Power: ' + ${battleResult.hero2.powerstats.power}">Power</div>
     </div>
 </div>
+
+<!-- Mostrar el ganador -->
+<div class="battle-result" th:if="${battleResult.winner != null}">
+    <span th:class="${battleResult.winner == 'Draw' ? 'result-draw' : (battleResult.winner == battleResult.hero1.name ? 'result-win' : 'result-lose')}">
+        <span th:text="'Winner: ' + ${battleResult.winner}"></span>
+    </span>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script th:if="${battleResult.winner != null and battleResult.winner != 'Draw'}">
+    window.onload = function () {
+        confetti({
+            particleCount: 200,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+    };
+</script>
+
 
 </body>
 </html>
