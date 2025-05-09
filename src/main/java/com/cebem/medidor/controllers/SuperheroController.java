@@ -12,7 +12,7 @@ public class SuperheroController {
     @Autowired
     private SuperheroService superheroService;
 
-    @GetMapping("/")
+    @GetMapping("/superheroes")
     public String showSuperheroes(Model model) {
         model.addAttribute("groupBattles", superheroService.getRandomGroupBattles(3));
         return "SuperheroCard";
